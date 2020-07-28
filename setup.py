@@ -1,12 +1,12 @@
 from setuptools import setup
 
 setup(
-    name='ganOfficial',
-    version='',
+    name='RegCGAN',
+    version='V1.0',
     packages=['models', 'data', 'notebook'],
     url='',
-    license='',
-    author='m.kirchmeyer',
-    author_email='',
-    description=''
+    license='MIT License',
+    author='Zhongsheng Chen',
+    author_email='zschen@mail.buct.edu.cn',
+    description='CGAN for regression'
 )

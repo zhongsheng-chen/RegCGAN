@@ -1,3 +1,26 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Author: Zhongsheng Chen
+# Date: 05/09/2020
+# Copyright: Copyright 2020, Beijing University of Chemical Technology
+# License: The MIT License (MIT)
+# Email: zschen@mail.buct.edu.cn
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+"""" Conditional GAN for Regression.
+
+We implement conditional GAN for regression, termed as RegCGAN.
+It consists of a Generator G and a Discriminator D. Generator G will pass though x and z,
+and will output y; however, Discriminator D will consume x and y and try to distinguish
+either true y or fake one. The Generator G and the Discriminator D are trained simultaneously
+to play a max-min games. Once training procedure finishes completely, we have that G(z, y)
+approximate p(x, y). By fixing y, we have G(z|y) approximating p(x|y).
+By sampling z, we can therefore obtain samples following approximately p(x|y),
+which is the predictive distribution of x for a new observation y.
+
+"""
+
 from __future__ import print_function, division
 
 import numpy as np
@@ -6,14 +29,17 @@ from keras.models import Model
 from keras.optimizers import Adam, SGD
 from network import build_discriminator, build_generator
 
-"""
-CGAN code derived from https://github.com/eriklindernoren/Keras-GAN
-Generator will input (x & noise) and will output y_hat.
-Discriminator will input (x & y_hat) and will differentiate between that and y.
-"""
 
+class RegCGAN():
+    """ RegCGAN class
 
-class CGAN():
+    The architecture for G and D is separately defined in network.py.
+    The G and D are optimized by stochastic gradient optimizers like Adam and SGD. Our codes
+    derive from contributions at https://github.com/eriklindernoren/Keras-GAN and
+    https://github.com/mkirchmeyer/ganRegression
+
+    """
+
     def __init__(self, exp_config):
         if exp_config.model.optim_gen == "Adam":
             self.optimizer_gen = Adam(exp_config.model.lr_gen, decay=exp_config.model.dec_gen)
@@ -46,33 +72,20 @@ class CGAN():
         if exp_config.model.architecture is not None:
             self.architecture = exp_config.model.architecture
 
-        # Build and compile the discriminator
-        self.discriminator = build_discriminator(self)
+        self.discriminator = build_discriminator(self)  # Build  the Discriminator D
         self.discriminator.compile(
             loss=['binary_crossentropy'],
             optimizer=self.optimizer_disc,
             metrics=['accuracy'])
 
-        # Build the generator
-        self.generator = build_generator(self)
-
-        # The generator takes noise and the target y as input
-        # and generates the corresponding predictions of that y
+        self.generator = build_generator(self)  # Build the Generator G
         noise = Input(shape=(self.z_input_size,))
-
         x = Input(shape=(self.x_input_size,))
         y = self.generator([noise, x])
 
-        # For the combined model we will only train the generator
-        self.discriminator.trainable = False
-
-        # The discriminator takes generated y as input and determines validity
-        # and the y of that image
+        self.discriminator.trainable = False  # For the combined model, we will only train the generator
         validity = self.discriminator([x, y])
-
-        # The combined model (stacked generator and discriminator)
-        # Trains generator to fool discriminator
-        self.combined = Model([noise, x], validity)
+        self.combined = Model([noise, x], validity)  # The combined model will train generator to fool discriminator
         self.combined.compile(
             loss=['binary_crossentropy'],
             optimizer=self.optimizer_gen)
@@ -82,7 +95,7 @@ class CGAN():
         print(self.discriminator.summary())
 
     def train(self, xtrain, ytrain, epochs, batch_size=128, verbose=True):
-        # Adversarial ground truths
+
         valid = np.ones((batch_size, 1))
         fake = np.zeros((batch_size, 1))
 
@@ -95,30 +108,29 @@ class CGAN():
 
         for epoch in range(epochs):
 
-            # train Generator and Discriminator alternatively.
+            # train Generator G and Discriminator D alternatively.
             for iter in range(int(xtrain.shape[0] // batch_size)):
-                # ---------------------
-                #  Train Discriminator
-                # ---------------------
-                # Select a random half batch of samples
-                idx = np.random.randint(0, xtrain.shape[0], batch_size)
+                # -----------------------
+                #  Train Discriminator D
+                # -----------------------
+
+                idx = np.random.randint(0, xtrain.shape[0], batch_size)  # Select a random half batch of samples
                 true_x, true_y = xtrain[idx], ytrain[idx]
-                # Sample noise as generator input
-                noise = np.random.normal(0, 1, (batch_size, self.z_input_size))
-                # Generate a half batch of new images
+
+                noise = np.random.normal(0, 1, (batch_size, self.z_input_size))  # sample noise z from N(0, I)
+                # Generate new observations of y
                 fake_y = self.generator.predict([noise, true_x])
-                # Train the discriminator
+                # Train the discriminator on batch
                 d_loss_real = self.discriminator.train_on_batch([true_x, true_y], valid)
                 d_loss_fake = self.discriminator.train_on_batch([true_x, fake_y], fake)
                 d_loss = np.add(d_loss_real, d_loss_fake)
 
                 # ---------------------
-                #  Train Generator
+                #  Train Generator G
                 # ---------------------
-                # Condition on x
-                # idx = np.random.randint(0, xtrain.shape[0], batch_size)
-                # x = xtrain[idx]
-                # Train the generator
+
+                idx = np.random.randint(0, xtrain.shape[0], batch_size)  # Condition on x
+                true_x = xtrain[idx]
                 g_loss = self.combined.train_on_batch([noise, true_x], valid)
 
             dLossErr[epoch] = d_loss[0]
@@ -135,20 +147,18 @@ class CGAN():
 
         return dLossErr, dLossReal, dLossFake, gLossErr, genPred, genReal
 
-    def predict(self, xtest):
-        noise = np.random.normal(0, 1, (xtest.shape[0], self.z_input_size))
-        ypred = self.generator.predict([noise, xtest])
-        return ypred
+    def predict(self, x_test):
+        noise = np.random.normal(0, 1, (x_test.shape[0], self.z_input_size))
+        y_pred = self.generator.predict([noise, x_test])
+        return y_pred
 
-    def sample(self, xtest, n_samples):
-        y_samples_gan = self.predict(xtest)
-        for i in range(n_samples - 1):
-            ypred_gan = self.predict(xtest)
-            y_samples_gan = np.hstack([y_samples_gan, ypred_gan])
-        median = []
+    def sampling(self, x, n_sampling):
+        y = self.predict(x)
+        for i in range(n_sampling - 1):
+            y_pred = self.predict(x)
+            y = np.hstack([y, y_pred])
         mean = []
-        for j in range(y_samples_gan.shape[0]):
-            median.append(np.median(y_samples_gan[j, :]))
-            mean.append(np.mean(y_samples_gan[j, :]))
+        for j in range(y.shape[0]):
+            mean.append(np.mean(y[j, :]))
 
-        return np.array(mean).reshape(-1, 1), np.array(median).reshape(-1, 1), y_samples_gan
+        return np.array(mean).reshape(-1, 1)

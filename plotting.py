@@ -1,3 +1,13 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Author: Zhongsheng Chen
+# Date: 05/09/2020
+# Copyright: Copyright 2020, Beijing University of Chemical Technology
+# License: The MIT License (MIT)
+# Email: zschen@mail.buct.edu.cn
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 from os.path import basename
 from mpl_toolkits.mplot3d import axes3d
 
