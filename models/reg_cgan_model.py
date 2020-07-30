@@ -14,7 +14,7 @@ We implement conditional GAN for regression, termed as RegCGAN.
 It consists of a Generator G and a Discriminator D. Generator G will pass though x and z,
 and will output y; however, Discriminator D will consume x and y and try to distinguish
 either true y or fake one. The Generator G and the Discriminator D are trained simultaneously
-to play a max-min games. Once training procedure finishes completely, we have that G(z, y)
+to play a max-min games. Once training procedure finished completely, we have that G(z, y)
 approximate p(x, y). By fixing y, we have G(z|y) approximating p(x|y).
 By sampling z, we can therefore obtain samples following approximately p(x|y),
 which is the predictive distribution of x for a new observation y.

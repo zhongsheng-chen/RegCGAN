@@ -31,7 +31,7 @@ def plot_learning_curves(history):
 
 def _get_scatter_data(inp, out):
     """
-    A helper function that organize inputs and outputs data.
+    A helper function that organize inputs and outputs applications.
     """
     xi, yi, zi = inp[:, 0], inp[:, 1], out
     return xi, yi, zi
@@ -81,7 +81,7 @@ def plot_dataset(X_train, X_test, y_train, y_test, exp_config, fig_dir):
     ax = plt.axes(projection="3d")
     ax = _plot_surface(ax, _magical_sinus)
 
-    # plot 3-d scatter for data points which are using for training and testing.
+    # plot 3-d scatter for applications points which are using for training and testing.
     xt, yt, zt = _get_scatter_data(X_train, y_train)
     ax.scatter3D(xt, yt, zt.flatten(), c='r', marker='o', s=10, label="training samples")
     xe, ye, ze = _get_scatter_data(X_test, y_test)
@@ -250,7 +250,7 @@ def plot_contour(give_y):
 def plot_sparse_regions(X, X_outliers, radius, fig_dir=""):
     fig, ax = plt.subplots(figsize=(5, 5))
     ax.scatter(X[:, 0], X[:, 1],
-               label="Original data", edgecolors='g')
+               label="Original applications", edgecolors='g')
     ax.scatter(X_outliers[:, 0], X_outliers[:, 1],
                s=2000 * radius, edgecolors='r',
                facecolors='none', label='Outliers')
