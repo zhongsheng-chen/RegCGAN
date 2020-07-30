@@ -52,6 +52,7 @@ class RegCGAN():
         self.activation = exp_config.model.activation
         self.seed = exp_config.model.random_seed
         self.scenario = exp_config.dataset.scenario
+        self.n_sampling = exp_config.training.n_sampling
 
         if self.scenario == "magical_sinus":
             self.x_input_size = 2
@@ -147,18 +148,25 @@ class RegCGAN():
 
         return dLossErr, dLossReal, dLossFake, gLossErr, genPred, genReal
 
-    def predict(self, x_test):
+    def _make_predict(self, x_test):
         noise = np.random.normal(0, 1, (x_test.shape[0], self.z_input_size))
         y_pred = self.generator.predict([noise, x_test])
         return y_pred
 
-    def sampling(self, x, n_sampling):
-        y = self.predict(x)
-        for i in range(n_sampling - 1):
-            y_pred = self.predict(x)
+    def _make_sampling(self, x):
+        y = self._make_predict(x)
+        for i in range(self.n_sampling - 1):
+            y_pred = self._make_predict(x)
             y = np.hstack([y, y_pred])
         mean = []
         for j in range(y.shape[0]):
             mean.append(np.mean(y[j, :]))
 
         return np.array(mean).reshape(-1, 1)
+
+    def predict(self, x):
+        """
+        predicted y by averaging over a couple of sampled data of y itself,
+        which are sampled from p(y|x) captured by RegCGAN implicitly.
+        """
+        return self._make_sampling(x)

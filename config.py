@@ -33,7 +33,7 @@ class ModelConfig(typing.NamedTuple):
 class TrainingConfig(typing.NamedTuple):
     n_epochs: int = 20
     batch_size: int = 128
-    n_samples: int = 100  # the size of sampling times for which samples drawn from p(y|x)
+    n_sampling: int = 500  # the size of sampling times for which samples drawn from p(y|x)
 
 
 class DatasetConfig(typing.NamedTuple):
