@@ -142,31 +142,37 @@ class RegCGAN():
             if verbose:
                 print(f"Epoch: {epoch} / dLoss: {d_loss[0]} / gLoss: {g_loss}")
 
-            ypred = self.predict(xtrain)
+            ypred = self._make_predict(xtrain)
             genPred[epoch] = np.average(ypred)
             genReal[epoch] = np.average(ytrain)
 
         return dLossErr, dLossReal, dLossFake, gLossErr, genPred, genReal
 
-    def _make_predict(self, x_test):
-        noise = np.random.normal(0, 1, (x_test.shape[0], self.z_input_size))
-        y_pred = self.generator.predict([noise, x_test])
+    def _make_predict(self, x):
+        noise = np.random.normal(0, 1, (x.shape[0], self.z_input_size))
+        y_pred = self.generator.predict([noise, x])
         return y_pred
 
     def _make_sampling(self, x):
-        y = self._make_predict(x)
+        """
+        sample y n_sampling times at given x.
+        """
+
+        y_sam = self._make_predict(x)
         for i in range(self.n_sampling - 1):
             y_pred = self._make_predict(x)
-            y = np.hstack([y, y_pred])
-        mean = []
-        for j in range(y.shape[0]):
-            mean.append(np.mean(y[j, :]))
+            y_sam = np.hstack([y_sam, y_pred])
 
-        return np.array(mean).reshape(-1, 1)
+        return y_sam
 
     def predict(self, x):
         """
         predicted y by averaging over a couple of sampled data of y itself,
         which are sampled from p(y|x) captured by RegCGAN implicitly.
         """
-        return self._make_sampling(x)
+        y_sam = self._make_sampling(x)
+        mean = []
+        for j in range(y_sam.shape[0]):
+            mean.append(np.mean(y_sam[j, :]))
+
+        return np.array(mean).reshape(-1, 1)

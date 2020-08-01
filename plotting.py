@@ -99,9 +99,9 @@ def plot_dataset(X_train, X_test, y_train, y_test, exp_config, fig_dir):
     plt.show()
 
 
-def plot_ypred_joint(x, ytrue, ypred_single_cgan, ypred_mean_cgan, ypred_gp,
-                     *, alpha=0.5, elevation=30, azimuth=60,
-                     prefix="", fig_dir="", save_fig=False, legend=True, zlim=None, show=True):
+def plot_ypred_with_locations(x, ytrue, ypred_regcgan, ypred_gp,
+                            *, alpha=0.5, elevation=30, azimuth=60,
+                            prefix="", fig_dir="", save_fig=False, legend=True, zlim=None, show=True):
     xdata = []
     ydata = []
     legend_str = []
@@ -111,15 +111,10 @@ def plot_ypred_joint(x, ytrue, ypred_single_cgan, ypred_mean_cgan, ypred_gp,
         ydata.append(ytrue)
         legend_str.append("True")
 
-    if ypred_single_cgan is not None:
+    if ypred_regcgan is not None:
         xdata.append(x)
-        ydata.append(ypred_single_cgan)
-        legend_str.append("Single CGAN")
-
-    if ypred_mean_cgan is not None:
-        xdata.append(x)
-        ydata.append(ypred_mean_cgan)
-        legend_str.append("Mean CGAN")
+        ydata.append(ypred_regcgan)
+        legend_str.append("RegCGAN")
 
     if ypred_gp is not None:
         xdata.append(x)
@@ -147,7 +142,7 @@ def plot_ypred_joint(x, ytrue, ypred_single_cgan, ypred_mean_cgan, ypred_gp,
         ax.view_init(elev=elevation, azim=azimuth)
     fig.tight_layout()
     if save_fig:
-        plt.savefig(f"{fig_dir}/{basename(fig_dir)}_{prefix}_ypred.jpeg", bbox_inches='tight', dpi=300)
+        plt.savefig(f"{fig_dir}/{basename(fig_dir)}_{prefix}_ypred_at_locations.jpeg", bbox_inches='tight', dpi=300)
     if show:
         plt.show()
 
@@ -169,22 +164,17 @@ def plot_density_cont(x, y, title="", n_bins=200, ylim_min=0, y_lim_max=0, prefi
     plt.show()
 
 
-def plot_densities_joint(ytrue, ypred_single_cgan, ypred_mean_cgan, ypred_gp, title="", prefix="", fig_dir="",
+def plot_densities_joint(ytrue, ypred_regcgan, ypred_gp, title="", prefix="", fig_dir="",
                          save_fig=False, ylim=None):
     if ytrue is not None:
         sns.distplot(ytrue, hist=False, kde=True,
                      color='green', label="True",
                      kde_kws={'linestyle': 'solid'})
 
-    if ypred_single_cgan is not None:
-        sns.distplot(ypred_single_cgan, hist=False, kde=True,
-                     color='violet', label="Single CGAN",
+    if ypred_regcgan is not None:
+        sns.distplot(ypred_regcgan, hist=False, kde=True,
+                     color='violet', label="RegCGAN",
                      kde_kws={'linestyle': 'dashdot'})
-
-    if ypred_mean_cgan is not None:
-        sns.distplot(ypred_mean_cgan, hist=False, kde=True,
-                     color='blue', label="Mean CGAN",
-                     kde_kws={'linestyle': 'dotted'})
 
     if ypred_gp is not None:
         sns.distplot(ypred_gp, hist=False, kde=True,
@@ -301,15 +291,13 @@ def plot_voronoi_cvt(X_outliers, X_CVT, Voronoi, voronoi_plot_2d, fig_dir):
     plt.show()
 
 
-def plot_ypred_error(ytrue, ypred_single_cgan, ypred_mean_cgan, ypred_gp, title="", prefix="", fig_dir="",
-                     save_fig=False, ylim=None):
+def plot_ypred(ytrue, ypred_regcgan, ypred_gp, title="", prefix="", fig_dir="",
+               save_fig=False, ylim=None):
     fig, ax = plt.subplots(figsize=(10, 5))
     if ytrue is not None:
         ax.plot(ytrue, label="True", color="green", linestyle="-", marker="o", markersize=5)
-    if ypred_single_cgan is not None:
-        ax.plot(ypred_single_cgan, label="Single CGAN", color="magenta", linestyle="-.", marker="v", markersize=5)
-    if ypred_mean_cgan is not None:
-        ax.plot(ypred_mean_cgan, label="Mean CGAN", color="blue", linestyle="--", marker="s", markersize=5)
+    if ypred_regcgan is not None:
+        ax.plot(ypred_regcgan, label="RegCGAN", color="magenta", linestyle="-.", marker="v", markersize=5)
     if ypred_gp is not None:
         ax.plot(ypred_gp, label="GP", color="crimson", linestyle=":", marker="d", markersize=5)
 
@@ -322,7 +310,7 @@ def plot_ypred_error(ytrue, ypred_single_cgan, ypred_mean_cgan, ypred_gp, title=
     if ylim is not None:
         plt.ylim(ylim)
     if save_fig:
-        plt.savefig(f"{fig_dir}/{basename(fig_dir)}_{prefix}_ypred_error.jpeg", bbox_inches='tight', dpi=300)
+        plt.savefig(f"{fig_dir}/{basename(fig_dir)}_{prefix}_ypred.jpeg", bbox_inches='tight', dpi=300)
     plt.show()
 
 
