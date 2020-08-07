@@ -62,7 +62,7 @@ def get_dataset(n_instance=1000, scenario="magical_sinus", seed=1):
         X_val, y_val = gen_data_magical_sinus(n_instance)
 
     elif scenario == "hdpeuce":
-        my_data_train = np.genfromtxt(f"../applications/hdpeuce/hdpeuce.data", delimiter=',')
+        my_data_train = np.genfromtxt(f"../applications/hdpeuce/hdpeuce.applications", delimiter=',')
         X = my_data_train[:, :-1]
         y = my_data_train[:, -1]
         X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.3, random_state=seed)

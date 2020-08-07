@@ -37,7 +37,7 @@ class TrainingConfig(typing.NamedTuple):
 
 
 class DatasetConfig(typing.NamedTuple):
-    scenario: str = "magic_sinus"
+    scenario: str = "linear"
     n_instance: int = 1000
 
 

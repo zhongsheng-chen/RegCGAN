@@ -17,7 +17,6 @@ import seaborn as sns
 import pandas as pd
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
-import matplotlib.ticker as ticker
 from scipy.stats import kde
 
 from dataset import _magical_sinus
@@ -123,7 +122,7 @@ def plot_ypred_with_locations(x, ytrue, ypred_regcgan, ypred_gp,
         legend_str.append("GP")
     n_subplots = len(xdata)
     fig = plt.figure(figsize=(18, 9))
-    for i, (x, y, leg_str) in enumerate(zip(xdata, ydata, legend_str), 1):
+    for i, (x, y, leg_str) in enumerate(zip(xdata, ydata, legend_str), 1):  # TODO
         ax = fig.add_subplot(1, n_subplots, i, projection='3d')
         ax = _plot_surface(ax, _magical_sinus)
 
@@ -318,28 +317,24 @@ def plot_ypred(ytrue, ypred_regcgan, ypred_gp, title="", prefix="", fig_dir="",
 def plot_mlp_ypred(ytrue, y_pred_baseline, y_pred_cvt,
                    y_pred_mtd, y_pred_ttd, y_pred_bootstrap,
                    title="", prefix="", fig_dir="",
-                   save_fig=False, ylim=None, marker_size=5,
-                   fig_width=20, fig_height=5):
-    fig, ax = plt.subplots(figsize=(fig_width, fig_height))
+                   save_fig=False, ylim=None):
+    fig, ax = plt.subplots(figsize=(10, 3.5))
     if ytrue is not None:
-        ax.plot(ytrue, label="True", color="green", linestyle="-", marker="o", markersize=marker_size)
+        ax.plot(ytrue, label="True", color="green", linestyle="-", marker="o", markersize=5)
     if y_pred_baseline is not None:
-        ax.plot(y_pred_baseline, label="No VS", color="magenta", linestyle="-.", marker="v", markersize=marker_size)
+        ax.plot(y_pred_baseline, label="No VS", color="magenta", linestyle="-.", marker="v", markersize=5)
     if y_pred_cvt is not None:
-        ax.plot(y_pred_cvt, label="VS by our method ", color="blue", linestyle="--", marker="s", markersize=marker_size)
+        ax.plot(y_pred_cvt, label="VS by our method ", color="blue", linestyle="--", marker="s", markersize=5)
     if y_pred_mtd is not None:
-        ax.plot(y_pred_mtd, label="VS by MTD", color="skyblue", linestyle="--", marker="<", markersize=marker_size)
+        ax.plot(y_pred_mtd, label="VS by MTD", color="skyblue", linestyle="--", marker="<", markersize=5)
     if y_pred_ttd is not None:
-        ax.plot(y_pred_ttd, label="VS by TTD", color="olive", linestyle="--", marker=">", markersize=marker_size)
+        ax.plot(y_pred_ttd, label="VS by TTD", color="olive", linestyle="--", marker=">", markersize=5)
     if y_pred_bootstrap is not None:
-        ax.plot(y_pred_bootstrap, label="VS by Bootstrap", color="cyan", linestyle="--", marker="*", markersize=marker_size)
+        ax.plot(y_pred_bootstrap, label="VS by Bootstrap", color="cyan", linestyle="--", marker="*", markersize=5)
 
     plt.xlabel(r"Index of samples")
     plt.ylabel(r"Outputs")
     lg = plt.legend(bbox_to_anchor=(1.0, 1.0), loc='upper left')
-
-    ax.yaxis.set_major_locator(LinearLocator(5))
-    ax.yaxis.set_major_formatter(FormatStrFormatter(r'%.03f'))
 
     if title:
         plt.title(title)

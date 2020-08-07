@@ -38,11 +38,11 @@ def Parzen_NLPD(yTrue, yPred, bw):
     return np.mean(nlpd)
 
 
-def Parzen(regcgan, x, y, n_sampling=100, n_bands=100):
+def Parzen(regcgan, x, y, n_sample=100, n_bands=100):
     n_instance = x.shape[0]
     ypred_list = []
     for i in range(n_instance):
-        x_ = np.tile(x[i], (n_sampling, 1))
+        x_ = np.tile(x[i], (n_sample, 1))
         ypred_ = regcgan.predict(x_)
         ypred_list.append(ypred_)
     return min_Parzen_NLPD(y, np.array(ypred_list), n_bands)
@@ -57,11 +57,11 @@ def min_Parzen_NLPD(yTrue, yPred, n_bands=100):
     return nlpd[inx], windows[inx], nlpd
 
 
-def Parzen_test(regcgan, X, y, bw, n_sampling=10):
+def Parzen_test(regcgan, X, y, bw, n_sample=10):
     n_instance = X.shape[0]
     ypred_list = []
     for i in range(n_instance):
-        x_ = np.tile(X[i], (n_sampling, 1))
+        x_ = np.tile(X[i], (n_sample, 1))
         ypred_ = regcgan._make_predict(x_)
         ypred_list.append(ypred_)
     return Parzen_NLPD(y, np.array(ypred_list), bw)
