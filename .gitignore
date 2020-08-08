@@ -4,4 +4,5 @@
 *.ipynb_checkpoints/
 .DS_Store
 /applications/hdpeuce/
+/asset/
 /RegCGAN.egg-info/
