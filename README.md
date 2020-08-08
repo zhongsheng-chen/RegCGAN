@@ -1,39 +1,45 @@
-# Regression with CGAN Code
-This repository contains the code of the following paper 
+# RegCGAN 
 
-K Aggarwal, M Kirchmeyer, P Yadav, S Sathiya Keerthi, P Gallinari, "[Regression with Conditional GAN](https://arxiv.org/abs/1905.12868)"
+Our RegCGAN is a new generator for producing virtual samples. 
+Inspiring by CGAN, RegCGAN implicitly capture the condition 
+probability `p(y|x)` from historical data as like CGAN doing for
+`p(x|y)`.So, similar to CGAN, our RegCGAN is mainly made up of
+a Generator *G* and a Discriminator *D*. The Generator *G* 
+consumes *x* and *z* and yields fake *y*, while 
+the Discriminator *D* consumes *x* and *y* and distinguish between
+the true y and the fake one. Once RegCGAN is well trained,
+it can serve as a generative probability model `p(y|x)`, just like 
+Gaussian process (GP). Thanks to such ability, we make an attempt to
+use it to synthesis output of any targeting points in the input space
+For small sample size (SSS) soft modeling problems, data at hand suffers 
+from data sparsity, leading to degrading performance of a soft model.
+To handle this issue, we intend to create new points to fill up such
+ areas of data sparsity in the input space through CVT sampling. The
+ data sparsity regions is identified by Local Outlier Factor. The
+ output of uniformly distributed new samples is synthesis by averaging
+ a number of samples drawn from p(y|x), which is captured by RegCGAN.
+ Because the generated samples has a similar behavior to the
+ real samples when used to training a soft model,
+  we call them virtual samples.
 
 # Dependencies
-In order to run, the code requires the following Python modules referenced in `requirements.txt`:
-  * numpy, jupyter, matplotlib, pandas
+This code requires the following package referenced in `requirements.txt`:
+  * numpy, jupyter, matplotlib, pandas, seaborn
   * sklearn
   * tensorflow, keras
-  * GPy `https://sheffieldml.github.io/GPy/`
+  * density, available at `https://pypi.org/project/diversipy/`
+  * idaes-pse, available at `https://idaes-pse.readthedocs.io/en/stable/getting_started.html/`
+  * For GPy, one can visit `https://sheffieldml.github.io/GPy/`
   
-CGAN code is derived from `https://github.com/eriklindernoren/Keras-GAN`
+ all packages need to be installed on a conda environment with python >= 3.0 
 
-# Quickstart
-* Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-* Create conda environment: `conda create --name ganRegression python=3.6 -y` then source it `source activate ganRegression`
-* Install the requirements in this environment `pip install -r requirements.txt`
-* Install the package `pip install -e .` at the root
-* Run the notebooks using `jupyter-notebook`
+# Getting started
+* First, install must-have packages in the environment
+ `pip install -r requirements.txt`. 
+* Second, install RegCGAN itself by 
+ typing `pip install -e .` at the root.
+* Finally, run an applications in the notebooks using `jupyter-notebook`.
 
-# Notebooks
-* Run `notebook/synthetic_data.ipynb` for synthetic data
-* Run `notebook/real_world_data.ipynb` for real world data
-* Notebooks will save figures in the `figures` folder for each data scenario
-
-# Datasets
-* Synthetic datasets: `linear`, `sinus`, `heteroscedastic`, `exp`, `multi-modal`
-* Real World datasets:
-    * `CA-housing` taken from `sklearn.datasets`. `CA-housing-single` takes the most important feature from `CA-housing` (cf. study in the paper)
-    * `ailerons` taken from `http://www.dcc.fc.up.pt/~ltorgo/Regression/DataSets.html`
-    * `comp-activ`, `pumadyn`, `bank`, `census-house`, `abalone` taken from `https://www.cs.toronto.edu/~delve/data/datasets.html` 
-
-# Config
-* The Config class handles all parameters. These are set at the beginning of each notebook. Refer to `config.py` for more details
-* Architectures are fixed in `cgan_model.py` or can be set in the Config object for custom experiments.
-
-# Results and uncertainty
-* Results from the paper can be reproduced with an uncertainty smaller than 0.05 on NLPD + MAE for CGAN.
+# Acknowledgement
+We appreciate efforts in `https://github.com/eriklindernoren/Keras-GAN` and
+in `https://github.com/mkirchmeyer/ganRegression`.

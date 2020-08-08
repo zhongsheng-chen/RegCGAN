@@ -101,8 +101,8 @@ def plot_dataset(X_train, X_test, y_train, y_test, exp_config, fig_dir):
 
 
 def plot_ypred_with_locations(x, ytrue, ypred_regcgan, ypred_gp,
-                            *, alpha=0.5, elevation=30, azimuth=60,
-                            prefix="", fig_dir="", save_fig=False, legend=True, zlim=None, show=True):
+                              *, alpha=0.5, elevation=30, azimuth=60,
+                              prefix="", fig_dir="", save_fig=False, legend=True, zlim=None, show=True):
     xdata = []
     ydata = []
     legend_str = []
@@ -318,21 +318,27 @@ def plot_ypred(ytrue, ypred_regcgan, ypred_gp, title="", prefix="", fig_dir="",
 def plot_mlp_ypred(ytrue, y_pred_baseline, y_pred_cvt,
                    y_pred_mtd, y_pred_ttd, y_pred_bootstrap,
                    title="", prefix="", fig_dir="",
-                   save_fig=False, ylim=None, marker_size=5,
+                   save_fig=False, ylim=None, marker_size=5, line_width=1,
                    fig_width=20, fig_height=5):
     fig, ax = plt.subplots(figsize=(fig_width, fig_height))
     if ytrue is not None:
-        ax.plot(ytrue, label="True", color="green", linestyle="-", marker="o", markersize=marker_size)
+        ax.plot(ytrue, label="True", color="green", linestyle="-",
+                marker="o", markersize=marker_size, linewidth=line_width)
     if y_pred_baseline is not None:
-        ax.plot(y_pred_baseline, label="No VS", color="magenta", linestyle="-.", marker="v", markersize=marker_size)
+        ax.plot(y_pred_baseline, label="No VS", color="magenta", linestyle="-.",
+                marker="v", markersize=marker_size, linewidth=line_width)
     if y_pred_cvt is not None:
-        ax.plot(y_pred_cvt, label="VS by our method ", color="blue", linestyle="--", marker="s", markersize=marker_size)
+        ax.plot(y_pred_cvt, label="VS by our method ", color="blue", linestyle="--",
+                marker="s", markersize=marker_size, linewidth=line_width)
     if y_pred_mtd is not None:
-        ax.plot(y_pred_mtd, label="VS by MTD", color="skyblue", linestyle="--", marker="<", markersize=marker_size)
+        ax.plot(y_pred_mtd, label="VS by MTD", color="skyblue", linestyle="--",
+                marker="<", markersize=marker_size, linewidth=line_width)
     if y_pred_ttd is not None:
-        ax.plot(y_pred_ttd, label="VS by TTD", color="olive", linestyle="--", marker=">", markersize=marker_size)
+        ax.plot(y_pred_ttd, label="VS by TTD", color="olive", linestyle="--",
+                marker=">", markersize=marker_size, linewidth=line_width)
     if y_pred_bootstrap is not None:
-        ax.plot(y_pred_bootstrap, label="VS by Bootstrap", color="cyan", linestyle="--", marker="*", markersize=marker_size)
+        ax.plot(y_pred_bootstrap, label="VS by Bootstrap", color="cyan", linestyle="--",
+                marker="*", markersize=marker_size, linewidth=line_width)
 
     plt.xlabel(r"Index of samples")
     plt.ylabel(r"Outputs")
