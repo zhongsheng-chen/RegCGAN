@@ -17,7 +17,7 @@ To handle this issue, we intend to create new points to fill up such
  areas of data sparsity in the input space through CVT sampling. The
  data sparsity regions is identified by Local Outlier Factor. The
  output of uniformly distributed new samples is synthesis by averaging
- a number of samples drawn from p(y|x), which is captured by RegCGAN.
+ a number of samples drawn from `p(y|x)`, which is captured by RegCGAN.
  Because the generated samples has a similar behavior to the
  real samples when used to training a soft model,
   we call them virtual samples.
@@ -43,3 +43,11 @@ This code requires the following package referenced in `requirements.txt`:
 # Acknowledgement
 We appreciate efforts in `https://github.com/eriklindernoren/Keras-GAN` and
 in `https://github.com/mkirchmeyer/ganRegression`.
+
+# How to cite
+Please cite in the way following:  
+Zhongsheng Chen, Kunrui Hou, Meiyu Zhu, Yuan Xu, Qunxiong Zhu (2020). 
+A virtual sample generation approach based on 
+a modified conditional GAN and centroidal Voronoi tessellation sampling 
+to cope with small sample size problems: 
+application to soft sensing for chemical  process. Summited on neurocomputing.
