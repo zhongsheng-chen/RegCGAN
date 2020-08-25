@@ -50,4 +50,4 @@ Zhongsheng Chen, Kunrui Hou, Meiyu Zhu, Yuan Xu, Qunxiong Zhu (2020).
 A virtual sample generation approach based on 
 a modified conditional GAN and centroidal Voronoi tessellation sampling 
 to cope with small sample size problems: 
-application to soft sensing for chemical  process. Summited on neurocomputing.
+application to soft sensing for chemical  process. Summited.
