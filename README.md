@@ -46,8 +46,9 @@ in `https://github.com/mkirchmeyer/ganRegression`.
 
 # How to cite
 Please cite in the way following:  
-Zhongsheng Chen, Kunrui Hou, Meiyu Zhu, Yuan Xu, Qunxiong Zhu (2020). 
+Zhongsheng Chen, Kunrui Hou, Meiyu Zhu, Yuan Xu, Qunxiong Zhu. 
 A virtual sample generation approach based on 
 a modified conditional GAN and centroidal Voronoi tessellation sampling 
 to cope with small sample size problems: 
-application to soft sensing for chemical  process. Summited.
+application to soft sensing for chemical  process. Applied Soft Computing, 
+Volume 101, March 2021, 107070. DOI:10.1016/j.asoc.2020.107070.
